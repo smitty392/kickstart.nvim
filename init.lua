@@ -84,6 +84,9 @@ I hope you enjoy your Neovim journey,
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
+-- Set default encoding to utf-8
+vim.o.fileencoding = 'utf-8'
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -470,6 +473,7 @@ require('lazy').setup({
       },
     },
   },
+
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
@@ -480,6 +484,7 @@ require('lazy').setup({
       { 'williamboman/mason.nvim', opts = {} },
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
+      'Hoffs/omnisharp-extended-lsp.nvim',
 
       -- Useful status updates for LSP.
       { 'j-hui/fidget.nvim', opts = {} },
@@ -693,6 +698,7 @@ require('lazy').setup({
             },
           },
         },
+        -- python lsp options
         pylsp = {
           settings = {
             pylsp = {
@@ -704,6 +710,23 @@ require('lazy').setup({
               },
             },
           },
+        },
+
+        omnisharp = {
+          cmd = {
+            'dotnet',
+            vim.fn.stdpath 'data' .. '/mason/packages/omnisharp/libexec/OmniSharp.dll',
+            '--languageserver',
+            '--hostPID',
+            tostring(vim.fn.getpid()),
+          },
+          enable_roslyn_analyzers = true,
+          organize_imports_on_format = true,
+          enable_import_completion = true,
+          handlers = {
+            ['textDocument/definition'] = require('omnisharp_extended').handler,
+          },
+          capabilities = capabilities,
         },
       }
 
